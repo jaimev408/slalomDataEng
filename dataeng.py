@@ -102,6 +102,19 @@ def processCSV(fileDir):
     return df
 
 def makeDF():
+    """Reads csv file to dataframe, cleans file, and returns it
+
+    Parameters
+    ----------
+    fileDir : str
+        The file location of the json file
+
+    Returns
+    -------
+    DataFrame
+        a pandas DataFrame with the clean file
+    """
+    
     #set directory of data files
     directory = "./Data/dataengineering/"
     #initialize lists to hold directories of files by type
@@ -178,6 +191,7 @@ def toBucket(df, name):
             df.to_csv(TextIOWrapper(zipped_file, 'utf8'), index=False)
         s3_object = s3_resource.Object('jaimevargasdiaztestbucket', name)
         s3_object.put(Body=buffer.getvalue()) 
+      
         
 df = makeDF()
 m,z,u = computeQueries(df)
