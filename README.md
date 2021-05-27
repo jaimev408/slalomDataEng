@@ -9,7 +9,15 @@ Heroku app
  
  
  S3 Bucket Files
+ 
+ 
  https://jaimevargasdiaztestbucket.s3-us-west-1.amazonaws.com/mainDF.gz
+ 
+ 
 https://jaimevargasdiaztestbucket.s3-us-west-1.amazonaws.com/meanReviewsBus.csv
+
+
 https://jaimevargasdiaztestbucket.s3-us-west-1.amazonaws.com/mostActiveUsers.csv
+
+
 https://jaimevargasdiaztestbucket.s3-us-west-1.amazonaws.com/topZipReviews.csv
