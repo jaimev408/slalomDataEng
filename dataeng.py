@@ -102,17 +102,12 @@ def processCSV(fileDir):
     return df
 
 def makeDF():
-    """Reads csv file to dataframe, cleans file, and returns it
-
-    Parameters
-    ----------
-    fileDir : str
-        The file location of the json file
+    """makes complete dataframe
 
     Returns
     -------
     DataFrame
-        a pandas DataFrame with the clean file
+        a pandas DataFrame with the combine file
     """
     
     #set directory of data files
@@ -149,6 +144,11 @@ def makeDF():
     return cleanDf
 
 def computeQueries(df):
+    """Returns three dataframes with calculated values accoridng to the assignment
+    
+    """
+    
+    
     #Find the mean reviews scores by business - Id. 
     meanRevBus = df[['Business - Id', 'Review - Stars']].groupby(['Business - Id'],as_index=False).mean('Review - Stars')
     #Rename columns
@@ -176,6 +176,9 @@ def computeQueries(df):
     return meanRevBus, zipcode,user
 
 def toBucket(df, name):
+    """Writes dataframes to S3 Bucket
+    
+    """
     bucket = 'jaimevargasdiaztestbucket' # bucket name already created on S3
     csv_buffer = StringIO() # set string file object
     df.to_csv(csv_buffer) # serialize dataframe using StringIO
@@ -186,6 +189,7 @@ def toBucket(df, name):
     if name != 'mainDF.gz':
         s3_resource.Object(bucket, name).put(Body=csv_buffer.getvalue()) # save csv
     else:
+        #since complete DF is too big, I'm compressing it as a gzip file before uploadign to S3
         buffer = BytesIO()
         with gzip.GzipFile(mode='w', fileobj=buffer) as zipped_file:
             df.to_csv(TextIOWrapper(zipped_file, 'utf8'), index=False)
@@ -193,8 +197,11 @@ def toBucket(df, name):
         s3_object.put(Body=buffer.getvalue()) 
       
         
+#Make clean combined dataframe
 df = makeDF()
+#make 3 dataframes with the answers to the three queries assigned
 m,z,u = computeQueries(df)
+#write all dataframes to bucket
 toBucket(df, 'mainDF.gz')
 toBucket(m, 'meanReviewsBus.csv')
 toBucket(z, 'mostActiveUsers.csv')
